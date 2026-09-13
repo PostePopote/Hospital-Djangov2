@@ -101,6 +101,19 @@ body > a {
     font-weight: bold;
 }
 
+.card-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #0d9f91;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.card-link:hover {
+    transform: translateX(5px);
+}
+
 body > a:hover {
     text-decoration: underline;
 }
