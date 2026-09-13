@@ -113,7 +113,3 @@ body > a {
 .card-link:hover {
     transform: translateX(5px);
 }
-
-body > a:hover {
-    text-decoration: underline;
-}
