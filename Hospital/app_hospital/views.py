@@ -4,6 +4,8 @@ from .models import Paciente
 from .models import Medico
 from .models import Especialidad
 
+def home(request):
+    return render(request, 'app_hospital/home.html')
 
 def saludo(request):
     return HttpResponse('Hola Mundo')
