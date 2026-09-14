@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'app_hospital/styles.css' %}">
+    <title>Agregar Tratamiento</title>
+</head>
+<body>
+    <h1>Agregar Tratamiento</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Paciente:</label>
+        <select name="id_paciente">
+            {% for paciente in pacientes %}
+            <option value="{{ paciente.id_paciente }}">
+                {{ paciente.nombre }} {{ paciente.apellido }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label>Medico:</label>
+        <select name="id_medico">
+            {% for medico in medicos %}
+            <option value="{{ medico.id_medico }}">
+                {{ medico.nombre }} {{ medico.apellido }}
+            </option>
+            {% endfor %}
+        </select><br>
+
+        <label>Descripcion:</label>
+        <input type="text" name="descripcion"><br>
+
+        <label>Fecha Inicio:</label>
+        <input type="date" name="fecha_inicio"><br>
+
+        <label>Fecha Fin:</label>
+        <input type="date" name="fecha_fin"><br>
+
+        <label>Observaciones:</label>
+        <textarea name="observaciones" rows="3"></textarea><br>
+
+        <label>Estado:</label>
+        <input type="text" name="estado"><br>
+
+        <button type="submit">Guardar Cambios</button>
+    </form>
+
+    <a href="/tratamientos/">Volver a Tratamientos</a>
+</body>
+</html>

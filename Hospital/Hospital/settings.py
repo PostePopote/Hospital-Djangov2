@@ -76,7 +76,7 @@ WSGI_APPLICATION = 'Hospital.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': '6hospi',
+        'NAME': 'hospital',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

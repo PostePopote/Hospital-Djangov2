@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <link rel="stylesheet" href="{% static 'app_hospital/styles.css' %}">
     <title>Tratamientos</title>
@@ -9,12 +9,19 @@
 <body>
     <h1>Lista de Tratamientos</h1>
 
-    <table border="1">
+    <a href="/tratamientos/agregar/"><button>Agregar Tratamiento</button></a>
+
+    <!-- Campo de busqueda, filtra la tabla mientras escribis -->
+    <input type="text" id="buscador" placeholder="Buscar tratamiento..." onkeyup="buscarTratamiento()">
+
+    <table border="1" id="tablaTratamientos">
         <tr>
             <th>Paciente</th>
             <th>Descripcion</th>
             <th>Medico</th>
             <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Observaciones</th>
         </tr>
         {% for tratamiento in tratamientos %}
         <tr>
@@ -22,10 +29,32 @@
             <td>{{ tratamiento.descripcion }}</td>
             <td>{{ tratamiento.medico }}</td>
             <td>{{ tratamiento.fecha_inicio }}</td>
+            <td>{{ tratamiento.fecha_fin }}</td>
+            <td>{{ tratamiento.observaciones }}</td>
         </tr>
         {% endfor %}
     </table>
 
     <a href="/">Volver al inicio</a>
+
+    <script>
+        // Filtra las filas de la tabla segun lo que se escribe en el buscador
+        function buscarTratamiento() {
+            var texto = document.getElementById("buscador").value.toLowerCase();
+            var tabla = document.getElementById("tablaTratamientos");
+            var filas = tabla.getElementsByTagName("tr");
+
+            for (var i = 1; i < filas.length; i++) {
+                var fila = filas[i];
+                var textoFila = fila.textContent.toLowerCase();
+
+                if (textoFila.indexOf(texto) > -1) {
+                    fila.style.display = "";
+                } else {
+                    fila.style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>

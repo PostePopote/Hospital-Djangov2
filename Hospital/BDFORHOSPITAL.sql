@@ -98,6 +98,14 @@ CREATE TABLE `tratamiento_medicamento` (
     `indicaciones` text, PRIMARY KEY (`id_tratamiento`, `id_medicamento`)
 );
 
+CREATE TABLE `usuarios` (
+    `id_usuario` int PRIMARY KEY AUTO_INCREMENT,
+    `username` varchar(50) UNIQUE NOT NULL,
+    `password` varchar(255) NOT NULL,
+    `nombre` varchar(100),
+    `estado` varchar(20)
+);
+
 ALTER TABLE `alergias` ADD FOREIGN KEY (`id_paciente`) REFERENCES `pacientes` (`id_paciente`);
 
 ALTER TABLE `medicos` ADD FOREIGN KEY (`id_especialidad`) REFERENCES `especialidades` (`id_especialidad`);
@@ -131,3 +139,6 @@ INSERT INTO especialidades (nombre) VALUES ('Cardiologia');
 
 INSERT INTO medicos (nombre, apellido, matricula, telefono, id_especialidad, estado)
 VALUES ('Carlos', 'Lopez', '4521', '351-1234567', 1, 'Activo');
+
+INSERT INTO usuarios (username, password, nombre, estado)
+VALUES ('admin', '1234', 'Administrador', 'Activo');
