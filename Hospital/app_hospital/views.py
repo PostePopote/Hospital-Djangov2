@@ -1,28 +1,33 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.db import connection
-from functools import wraps
+from django.contrib import messages
+
+from .pacientes_db import (
+    obtener_pacientes,
+    agregar_paciente_db,
+    obtener_paciente,
+    actualizar_paciente_db
+)
+
+from .medicos_db import (
+    obtener_medicos,
+    obtener_medico,
+    obtener_especialidades,
+    agregar_medico_db,
+    actualizar_medico_db
+)
+
+from .tratamientos_db import (
+    obtener_tratamientos,
+    obtener_tratamiento,
+    agregar_tratamiento_db,
+    actualizar_tratamiento_db
+)
+
+from .usuarios_db import obtener_usuario
 
 
-def dictfetchall(cursor):
-    # Convierte el resultado del cursor en una lista de diccionarios
-    # asi los templates pueden seguir usando {{ objeto.campo }}
-    columnas = [col[0] for col in cursor.description]
-    return [dict(zip(columnas, fila)) for fila in cursor.fetchall()]
-
-
-# ---------- DECORADOR PARA PROTEGER VISTAS ----------
-
-def login_requerido(vista):
-    @wraps(vista)
-    def wrapper(request, *args, **kwargs):
-        if not request.session.get('usuario_id'):
-            return redirect('login')
-        return vista(request, *args, **kwargs)
-    return wrapper
-
-
-# ---------- LOGIN / LOGOUT ----------
+# Login y logout
 
 def login_view(request):
     error = None
@@ -31,18 +36,12 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
 
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT * FROM usuarios WHERE username = %s AND password = %s",
-                [username, password]
-            )
-            usuario = dictfetchall(cursor)
+        usuario = obtener_usuario(username, password)
 
         if usuario:
-            # Guardamos los datos del usuario en la sesion
-            request.session['usuario_id'] = usuario[0]['id_usuario']
-            request.session['usuario_nombre'] = usuario[0]['nombre']
-            return redirect('index')
+            request.session['usuario_id'] = usuario['id_usuario']
+            request.session['usuario_nombre'] = usuario['nombre']
+            return redirect('home')
         else:
             error = 'Usuario o contraseña incorrectos'
 
@@ -54,7 +53,7 @@ def logout_view(request):
     return redirect('login')
 
 
-# ---------- PAGINAS BASICAS ----------
+# Paginas basicas
 
 def home(request):
     return render(request, 'app_hospital/home.html')
@@ -64,154 +63,217 @@ def saludo(request):
     return HttpResponse('Hola Mundo')
 
 
-def index(request):
-    return render(request, 'app_hospital/index.html')
+# Pacientes
 
-
-# ---------- PACIENTES ----------
-
-@login_requerido
 def pacientes(request):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM pacientes")
-        lista_pacientes = dictfetchall(cursor)
+    lista_pacientes = obtener_pacientes()
 
-    return render(request, 'app_hospital/pacientes.html', {'pacientes': lista_pacientes})
+    return render(
+        request,
+        'app_hospital/pacientes.html',
+        {'pacientes': lista_pacientes}
+    )
 
 
-@login_requerido
 def agregar_paciente(request):
+
     if request.method == 'POST':
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO pacientes
-                (nombre, apellido, dni, fecha_nacimiento, sexo, direccion, telefono,
-                 email, grupo_sanguineo, contacto_emergencia, telefono_emergencia,
-                 obra_social, numero_afiliado, fecha_alta, estado)
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """,
-                [
-                    request.POST.get('nombre'),
-                    request.POST.get('apellido'),
-                    request.POST.get('dni'),
-                    request.POST.get('fecha_nacimiento') or None,
-                    request.POST.get('sexo'),
-                    request.POST.get('direccion'),
-                    request.POST.get('telefono'),
-                    request.POST.get('email'),
-                    request.POST.get('grupo_sanguineo'),
-                    request.POST.get('contacto_emergencia'),
-                    request.POST.get('telefono_emergencia'),
-                    request.POST.get('obra_social'),
-                    request.POST.get('numero_afiliado'),
-                    request.POST.get('fecha_alta') or None,
-                    request.POST.get('estado'),
-                ]
-            )
+
+        agregar_paciente_db(
+            nombre=request.POST.get('nombre'),
+            apellido=request.POST.get('apellido'),
+            dni=request.POST.get('dni'),
+            fecha_nacimiento=request.POST.get('fecha_nacimiento') or None,
+            sexo=request.POST.get('sexo'),
+            direccion=request.POST.get('direccion'),
+            telefono=request.POST.get('telefono'),
+            email=request.POST.get('email'),
+            grupo_sanguineo=request.POST.get('grupo_sanguineo'),
+            contacto_emergencia=request.POST.get('contacto_emergencia'),
+            telefono_emergencia=request.POST.get('telefono_emergencia'),
+            obra_social=request.POST.get('obra_social'),
+            numero_afiliado=request.POST.get('numero_afiliado'),
+            fecha_alta=request.POST.get('fecha_alta') or None,
+            estado=request.POST.get('estado')
+        )
+
         return redirect('pacientes')
 
-    return render(request, 'app_hospital/agregar_paciente.html')
+    return render(
+        request,
+        'app_hospital/agregar_paciente.html'
+    )
 
 
-# ---------- MEDICOS ----------
+def editar_paciente(request, id_paciente):
 
-@login_requerido
-def medicos(request):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT m.id_medico, m.nombre, m.apellido, m.matricula, m.telefono,
-                   e.nombre AS especialidad
-            FROM medicos m
-            JOIN especialidades e ON m.id_especialidad = e.id_especialidad
-            """
-        )
-        lista_medicos = dictfetchall(cursor)
-
-    return render(request, 'app_hospital/medicos.html', {'medicos': lista_medicos})
-
-
-@login_requerido
-def agregar_medico(request):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT * FROM especialidades")
-        lista_especialidades = dictfetchall(cursor)
+    paciente = obtener_paciente(id_paciente)
 
     if request.method == 'POST':
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO medicos
-                (nombre, apellido, matricula, telefono, id_especialidad, estado)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                """,
-                [
-                    request.POST.get('nombre'),
-                    request.POST.get('apellido'),
-                    request.POST.get('matricula'),
-                    request.POST.get('telefono'),
-                    request.POST.get('id_especialidad'),
-                    request.POST.get('estado'),
-                ]
-            )
+
+        actualizar_paciente_db(
+            id_paciente=id_paciente,
+            nombre=request.POST.get('nombre'),
+            apellido=request.POST.get('apellido'),
+            dni=request.POST.get('dni'),
+            fecha_nacimiento=request.POST.get('fecha_nacimiento') or None,
+            sexo=request.POST.get('sexo'),
+            direccion=request.POST.get('direccion'),
+            telefono=request.POST.get('telefono'),
+            email=request.POST.get('email'),
+            grupo_sanguineo=request.POST.get('grupo_sanguineo'),
+            contacto_emergencia=request.POST.get('contacto_emergencia'),
+            telefono_emergencia=request.POST.get('telefono_emergencia'),
+            obra_social=request.POST.get('obra_social'),
+            numero_afiliado=request.POST.get('numero_afiliado'),
+            fecha_alta=request.POST.get('fecha_alta') or None,
+            estado=request.POST.get('estado')
+        )
+
+        return redirect('pacientes')
+
+    return render(
+        request,
+        'app_hospital/editar_paciente.html',
+        {'paciente': paciente}
+    )
+
+
+# Medicos
+
+def medicos(request):
+
+    lista_medicos = obtener_medicos()
+
+    return render(
+        request,
+        'app_hospital/medicos.html',
+        {'medicos': lista_medicos}
+    )
+
+
+def agregar_medico(request):
+
+    if request.method == 'POST':
+
+        agregar_medico_db(
+            nombre=request.POST.get('nombre'),
+            apellido=request.POST.get('apellido'),
+            matricula=request.POST.get('matricula'),
+            telefono=request.POST.get('telefono'),
+            id_especialidad=request.POST.get('id_especialidad'),
+            estado=request.POST.get('estado')
+        )
+
         return redirect('medicos')
 
-    return render(request, 'app_hospital/agregar_medico.html', {'especialidades': lista_especialidades})
+    lista_especialidades = obtener_especialidades()
+
+    return render(
+        request,
+        'app_hospital/agregar_medico.html',
+        {'especialidades': lista_especialidades}
+    )
 
 
-# ---------- TRATAMIENTOS ----------
+def editar_medico(request, id_medico):
 
-@login_requerido
-def tratamientos(request):
-    with connection.cursor() as cursor:
-        cursor.execute(
-            """
-            SELECT t.id_tratamiento,
-                   CONCAT(p.nombre, ' ', p.apellido) AS paciente,
-                   t.descripcion,
-                   CONCAT(md.nombre, ' ', md.apellido) AS medico,
-                   t.fecha_inicio, t.fecha_fin, t.observaciones, t.estado
-            FROM tratamientos t
-            JOIN pacientes p ON t.id_paciente = p.id_paciente
-            JOIN medicos md ON t.id_medico = md.id_medico
-            """
-        )
-        lista_tratamientos = dictfetchall(cursor)
-
-    return render(request, 'app_hospital/tratamientos.html', {'tratamientos': lista_tratamientos})
-
-
-@login_requerido
-def agregar_tratamiento(request):
-    with connection.cursor() as cursor:
-        cursor.execute("SELECT id_paciente, nombre, apellido FROM pacientes")
-        lista_pacientes = dictfetchall(cursor)
-
-        cursor.execute("SELECT id_medico, nombre, apellido FROM medicos")
-        lista_medicos = dictfetchall(cursor)
+    medico = obtener_medico(id_medico)
+    especialidades = obtener_especialidades()
 
     if request.method == 'POST':
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
-                INSERT INTO tratamientos
-                (id_paciente, id_medico, descripcion, fecha_inicio, fecha_fin, observaciones, estado)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                """,
-                [
-                    request.POST.get('id_paciente'),
-                    request.POST.get('id_medico'),
-                    request.POST.get('descripcion'),
-                    request.POST.get('fecha_inicio') or None,
-                    request.POST.get('fecha_fin') or None,
-                    request.POST.get('observaciones'),
-                    request.POST.get('estado'),
-                ]
-            )
+
+        actualizar_medico_db(
+            id_medico=id_medico,
+            nombre=request.POST.get('nombre'),
+            apellido=request.POST.get('apellido'),
+            matricula=request.POST.get('matricula'),
+            telefono=request.POST.get('telefono'),
+            id_especialidad=request.POST.get('id_especialidad'),
+            estado=request.POST.get('estado')
+        )
+
+        return redirect('medicos')
+
+    return render(
+        request,
+        'app_hospital/editar_medico.html',
+        {
+            'medico': medico,
+            'especialidades': especialidades
+        }
+    )
+
+
+# Tratamientos
+
+def tratamientos(request):
+
+    lista_tratamientos = obtener_tratamientos()
+
+    return render(
+        request,
+        'app_hospital/tratamientos.html',
+        {'tratamientos': lista_tratamientos}
+    )
+
+
+def agregar_tratamiento(request):
+
+    if request.method == 'POST':
+
+        agregar_tratamiento_db(
+            id_paciente=request.POST.get('id_paciente'),
+            id_medico=request.POST.get('id_medico'),
+            descripcion=request.POST.get('descripcion'),
+            fecha_inicio=request.POST.get('fecha_inicio') or None,
+            fecha_fin=request.POST.get('fecha_fin') or None,
+            observaciones=request.POST.get('observaciones'),
+            estado=request.POST.get('estado')
+        )
+
         return redirect('tratamientos')
 
-    return render(request, 'app_hospital/agregar_tratamiento.html', {
-        'pacientes': lista_pacientes,
-        'medicos': lista_medicos,
-    })
+    lista_pacientes = obtener_pacientes()
+    lista_medicos = obtener_medicos()
+
+    return render(
+        request,
+        'app_hospital/agregar_tratamiento.html',
+        {
+            'pacientes': lista_pacientes,
+            'medicos': lista_medicos
+        }
+    )
+
+
+def editar_tratamiento(request, id_tratamiento):
+
+    tratamiento = obtener_tratamiento(id_tratamiento)
+    lista_pacientes = obtener_pacientes()
+    lista_medicos = obtener_medicos()
+
+    if request.method == 'POST':
+
+        actualizar_tratamiento_db(
+            id_tratamiento=id_tratamiento,
+            id_paciente=request.POST.get('id_paciente'),
+            id_medico=request.POST.get('id_medico'),
+            descripcion=request.POST.get('descripcion'),
+            fecha_inicio=request.POST.get('fecha_inicio') or None,
+            fecha_fin=request.POST.get('fecha_fin') or None,
+            observaciones=request.POST.get('observaciones'),
+            estado=request.POST.get('estado')
+        )
+
+        return redirect('tratamientos')
+
+    return render(
+        request,
+        'app_hospital/editar_tratamiento.html',
+        {
+            'tratamiento': tratamiento,
+            'pacientes': lista_pacientes,
+            'medicos': lista_medicos
+        }
+    )

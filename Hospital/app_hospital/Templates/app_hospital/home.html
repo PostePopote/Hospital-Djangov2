@@ -1,328 +1,293 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital | Sistema de Gestión</title>
+    <title>Hospital | Sistema de Gestion</title>
 
-    <link rel="stylesheet" href="{% static 'app_hospital/style.css' %}">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- CSS propio, va despues de Bootstrap para poder sobreescribir estilos -->
+    <link rel="stylesheet" href="{% static 'app_hospital/styles.css' %}">
 </head>
-
 <body>
 
     <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="logo">
-            <span class="logo-icon">+</span>
-            <span>Hospital</span>
+    <nav class="navbar navbar-expand-lg hospital-navbar" data-bs-theme="dark">
+        <div class="container">
+            <a class="navbar-brand text-white" href="/">
+                <span class="logo-icon">+</span> Hospital
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarHospital">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarHospital">
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#sistema">Sistema</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#beneficios">Beneficios</a></li>
+                </ul>
+                <a href="/login/" class="btn btn-outline-light">Iniciar sesion</a>
+            </div>
         </div>
+    </nav>
 
-        <nav>
-            <a href="#inicio">Inicio</a>
-            <a href="#nosotros">Nosotros</a>
-            <a href="#sistema">Sistema</a>
-            <a href="#beneficios">Beneficios</a>
-        </nav>
 
-        <a href="/login/" class="btn-login">Iniciar sesión</a>
+    <!-- PORTADA -->
+    <header id="inicio" class="hospital-cover d-flex align-items-center">
+        <div class="container">
+            <div class="hospital-cover-content">
+                <span class="hospital-badge d-inline-block rounded-pill mb-3">
+                    SISTEMA DE GESTION HOSPITALARIA
+                </span>
+
+                <h1>Tecnologia para una mejor atencion</h1>
+
+                <p class="lead">
+                    Una solucion moderna para organizar y gestionar
+                    la informacion del hospital de manera rapida,
+                    segura y eficiente.
+                </p>
+
+                <div class="mt-4">
+                    <a href="/login/" class="btn btn-hospital btn-lg me-2">Iniciar sesion</a>
+                    <a href="#sistema" class="btn btn-outline-light btn-lg">Conocer el sistema</a>
+                </div>
+            </div>
+        </div>
     </header>
 
 
-    <!-- INICIO -->
-    <section id="inicio" class="hero">
-
-        <div class="hero-text">
-            <span class="tag">SISTEMA DE GESTIÓN HOSPITALARIA</span>
-
-            <h1>
-                Tecnología para una
-                <span>mejor atención</span>
-            </h1>
-
-            <p>
-                Una solución moderna para organizar y gestionar
-                la información del hospital de manera rápida,
-                segura y eficiente.
-            </p>
-
-            <div class="hero-buttons">
-                <a href="/login/" class="btn-primary">
-                    Iniciar sesión
-                </a>
-
-                <a href="#sistema" class="btn-secondary">
-                    Conocer el sistema
-                </a>
-            </div>
-        </div>
-
-        <div class="hero-card">
-            <div class="medical-icon">✚</div>
-
-            <h3>Gestión hospitalaria</h3>
-
-            <p>
-                Toda la información organizada en un solo lugar.
-            </p>
-
-            <div class="status">
-                <span></span>
-                Sistema disponible
-            </div>
-        </div>
-
-    </section>
-
-
     <!-- NOSOTROS -->
-    <section id="nosotros" class="section">
+    <section id="nosotros" class="py-5">
+        <div class="container">
 
-        <div class="section-title">
-            <span>QUIÉNES SOMOS</span>
-            <h2>Una herramienta pensada para el hospital</h2>
-        </div>
-
-        <div class="about">
-
-            <div class="about-text">
-                <h3>¿Qué buscamos?</h3>
-
-                <p>
-                    Nuestro objetivo es facilitar la gestión de un hospital
-                    mediante una plataforma simple, moderna y segura.
-                </p>
-
-                <p>
-                    El sistema permite centralizar información importante
-                    y facilitar el trabajo diario del personal hospitalario,
-                    ayudando a mejorar la organización y la atención
-                    de los pacientes.
-                </p>
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--hospital-primary);">Quienes somos</span>
+                <h2>Una herramienta pensada para el hospital</h2>
             </div>
 
-            <div class="about-box">
-                <div class="about-item">
-                    <strong>01</strong>
-                    <span>Organización</span>
-                    <p>Información centralizada y fácil de consultar.</p>
+            <div class="row align-items-center g-4">
+                <div class="col-md-6">
+                    <h3>¿Que buscamos?</h3>
+                    <p>
+                        Nuestro objetivo es facilitar la gestion de un hospital
+                        mediante una plataforma simple, moderna y segura.
+                    </p>
+                    <p>
+                        El sistema permite centralizar informacion importante
+                        y facilitar el trabajo diario del personal hospitalario,
+                        ayudando a mejorar la organizacion y la atencion
+                        de los pacientes.
+                    </p>
                 </div>
 
-                <div class="about-item">
-                    <strong>02</strong>
-                    <span>Seguridad</span>
-                    <p>Protección y control de la información.</p>
-                </div>
-
-                <div class="about-item">
-                    <strong>03</strong>
-                    <span>Eficiencia</span>
-                    <p>Procesos más rápidos y ordenados.</p>
+                <div class="col-md-6">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="hospital-card p-3">
+                                <strong class="text-muted">01</strong>
+                                <h5>Organizacion</h5>
+                                <p class="mb-0">Informacion centralizada y facil de consultar.</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="hospital-card p-3">
+                                <strong class="text-muted">02</strong>
+                                <h5>Seguridad</h5>
+                                <p class="mb-0">Proteccion y control de la informacion.</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="hospital-card p-3">
+                                <strong class="text-muted">03</strong>
+                                <h5>Eficiencia</h5>
+                                <p class="mb-0">Procesos mas rapidos y ordenados.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
         </div>
-
     </section>
 
 
     <!-- SISTEMA -->
-    <section id="sistema" class="section system-section">
+    <section id="sistema" class="py-5" style="background-color: white;">
+        <div class="container">
 
-        <div class="section-title">
-            <span>EL SISTEMA</span>
-            <h2>Todo lo que necesitás, en un solo lugar</h2>
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--hospital-primary);">El sistema</span>
+                <h2>Todo lo que necesitas, en un solo lugar</h2>
+                <p class="text-muted">
+                    El sistema permite administrar diferentes areas
+                    fundamentales para el funcionamiento del hospital.
+                </p>
+            </div>
 
-            <p>
-                El sistema permite administrar diferentes áreas
-                fundamentales para el funcionamiento del hospital.
-            </p>
+            <div class="row g-4">
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">👤</div>
+                        <h5 class="card-title">Pacientes</h5>
+                        <p>Registrar y consultar la informacion de los pacientes de forma organizada.</p>
+                        <a href="/pacientes/" class="btn btn-outline-hospital btn-sm">Ver pacientes →</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">🩺</div>
+                        <h5 class="card-title">Medicos</h5>
+                        <p>Gestionar profesionales, especialidades e informacion relacionada.</p>
+                        <a href="/medicos/" class="btn btn-outline-hospital btn-sm">Ver medicos →</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">💊</div>
+                        <h5 class="card-title">Tratamientos</h5>
+                        <p>Llevar un seguimiento ordenado de tratamientos y procedimientos.</p>
+                        <a href="/tratamientos/" class="btn btn-outline-hospital btn-sm">Ver tratamientos →</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">📅</div>
+                        <h5 class="card-title">Turnos</h5>
+                        <p>Organizar y consultar los turnos de atencion de manera sencilla.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">📋</div>
+                        <h5 class="card-title">Historiales</h5>
+                        <p>Acceder a informacion importante de cada paciente cuando sea necesario.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="hospital-card p-4 h-100">
+                        <div class="fs-2 mb-2">📊</div>
+                        <h5 class="card-title">Gestion</h5>
+                        <p>Facilitar la organizacion general y administracion del hospital.</p>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="cards">
-
-            <div class="card">
-                <div class="card-icon">👤</div>
-                <h3>Pacientes</h3>
-                <p>
-                    Registrar y consultar la información de los pacientes
-                    de forma organizada.
-                </p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">🩺</div>
-                <h3>Médicos</h3>
-                <p>
-                    Gestionar profesionales, especialidades y
-                    información relacionada.
-                </p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">💊</div>
-                <h3>Tratamientos</h3>
-                <p>
-                    Llevar un seguimiento ordenado de tratamientos
-                    y procedimientos.
-                </p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">📅</div>
-                <h3>Turnos</h3>
-                <p>
-                    Organizar y consultar los turnos de atención
-                    de manera sencilla.
-                </p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">📋</div>
-                <h3>Historiales</h3>
-                <p>
-                    Acceder a información importante de cada paciente
-                    cuando sea necesario.
-                </p>
-            </div>
-
-            <div class="card">
-                <div class="card-icon">📊</div>
-                <h3>Gestión</h3>
-                <p>
-                    Facilitar la organización general y administración
-                    del hospital.
-                </p>
-            </div>
-
-        </div>
-
     </section>
 
 
     <!-- BENEFICIOS -->
-    <section id="beneficios" class="section benefits-section">
+    <section id="beneficios" class="py-5">
+        <div class="container">
 
-        <div class="section-title">
-            <span>BENEFICIOS</span>
-            <h2>¿Por qué utilizar nuestro sistema?</h2>
+            <div class="text-center mb-5">
+                <span class="text-uppercase fw-bold" style="color: var(--hospital-primary);">Beneficios</span>
+                <h2>¿Por que utilizar nuestro sistema?</h2>
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="fs-3 fw-bold" style="color: var(--hospital-primary-light);">01</div>
+                        <div>
+                            <h5>Mayor organizacion</h5>
+                            <p>La informacion se encuentra centralizada y ordenada.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="fs-3 fw-bold" style="color: var(--hospital-primary-light);">02</div>
+                        <div>
+                            <h5>Acceso rapido</h5>
+                            <p>Permite consultar informacion de manera rapida y sencilla.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="fs-3 fw-bold" style="color: var(--hospital-primary-light);">03</div>
+                        <div>
+                            <h5>Mayor seguridad</h5>
+                            <p>El acceso al sistema permite controlar la informacion hospitalaria.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="d-flex gap-3">
+                        <div class="fs-3 fw-bold" style="color: var(--hospital-primary-light);">04</div>
+                        <div>
+                            <h5>Mejor atencion</h5>
+                            <p>Una gestion mas eficiente permite mejorar la atencion de los pacientes.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
-
-        <div class="benefits">
-
-            <div class="benefit">
-                <div class="benefit-number">01</div>
-                <div>
-                    <h3>Mayor organización</h3>
-                    <p>
-                        La información se encuentra centralizada
-                        y ordenada.
-                    </p>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <div class="benefit-number">02</div>
-                <div>
-                    <h3>Acceso rápido</h3>
-                    <p>
-                        Permite consultar información de manera
-                        rápida y sencilla.
-                    </p>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <div class="benefit-number">03</div>
-                <div>
-                    <h3>Mayor seguridad</h3>
-                    <p>
-                        El acceso al sistema permite controlar
-                        la información hospitalaria.
-                    </p>
-                </div>
-            </div>
-
-            <div class="benefit">
-                <div class="benefit-number">04</div>
-                <div>
-                    <h3>Mejor atención</h3>
-                    <p>
-                        Una gestión más eficiente permite
-                        mejorar la atención de los pacientes.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-
     </section>
 
 
-    <!-- CTA -->
-    <section class="cta">
-
-        <div>
-            <span>¿LISTO PARA COMENZAR?</span>
-
-            <h2>
-                Simplificá la gestión de tu hospital
-            </h2>
-
-            <p>
-                Accedé al sistema y comenzá a gestionar
-                la información de manera más eficiente.
-            </p>
+    <!-- LLAMADO A LA ACCION -->
+    <section class="py-5 text-center text-white" style="background-color: var(--hospital-primary-dark);">
+        <div class="container">
+            <span class="text-uppercase fw-bold">¿Listo para comenzar?</span>
+            <h2 class="text-white">Simplifica la gestion de tu hospital</h2>
+            <p>Accede al sistema y comenza a gestionar la informacion de manera mas eficiente.</p>
+            <a href="/login/" class="btn btn-light btn-lg mt-2">Iniciar sesion</a>
         </div>
-
-        <a href="/login/" class="btn-white">
-            Iniciar sesión
-        </a>
-
     </section>
 
 
     <!-- FOOTER -->
-    <footer>
-
-        <div class="footer-content">
-
-            <div class="footer-brand">
-                <div class="logo">
-                    <span class="logo-icon">+</span>
-                    <span>Hospital</span>
+    <footer class="hospital-footer py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <h5><span class="logo-icon">+</span> Hospital</h5>
+                    <p>Sistema de gestion hospitalaria orientado a mejorar la organizacion y atencion.</p>
                 </div>
 
-                <p>
-                    Sistema de gestión hospitalaria
-                    orientado a mejorar la organización
-                    y atención.
-                </p>
+                <div class="col-md-4 mb-3">
+                    <h6>Enlaces</h6>
+                    <a href="#inicio" class="d-block text-muted">Inicio</a>
+                    <a href="#nosotros" class="d-block text-muted">Nosotros</a>
+                    <a href="#sistema" class="d-block text-muted">Sistema</a>
+                    <a href="#beneficios" class="d-block text-muted">Beneficios</a>
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <h6>Sistema</h6>
+                    <a href="/pacientes/" class="d-block text-muted">Pacientes</a>
+                    <a href="/medicos/" class="d-block text-muted">Medicos</a>
+                    <a href="/tratamientos/" class="d-block text-muted">Tratamientos</a>
+                </div>
             </div>
 
-            <div class="footer-links">
-                <h4>Enlaces</h4>
-                <a href="#inicio">Inicio</a>
-                <a href="#nosotros">Nosotros</a>
-                <a href="#sistema">Sistema</a>
-                <a href="#beneficios">Beneficios</a>
-            </div>
-
-            <div class="footer-links">
-                <h4>Sistema</h4>
-                <a href="/login/">Iniciar sesión</a>
-                <a href="#">Contacto</a>
-                <a href="#">Ayuda</a>
-            </div>
-
+            <hr>
+            <p class="text-center text-muted mb-0">© 2026 Sistema de Gestion Hospitalaria. Todos los derechos reservados.</p>
         </div>
-
-        <div class="copyright">
-            © 2026 Sistema de Gestión Hospitalaria. Todos los derechos reservados.
-        </div>
-
     </footer>
 
+    <!-- Bootstrap JS, necesario para que funcione el boton del menu en celular -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
