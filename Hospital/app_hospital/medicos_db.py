@@ -1,6 +1,7 @@
 from django.db import connection
 
 
+# Recupera médicos junto con el nombre de su especialidad.
 def obtener_medicos():
 
     with connection.cursor() as cursor:
@@ -26,6 +27,7 @@ def obtener_medicos():
         ]
 
 
+# Busca un médico por identificador; devuelve None si no existe.
 def obtener_medico(id_medico):
 
     with connection.cursor() as cursor:
@@ -49,6 +51,7 @@ def obtener_medico(id_medico):
         return dict(zip(columnas, fila))
 
 
+# Obtiene todas las especialidades disponibles.
 def obtener_especialidades():
 
     with connection.cursor() as cursor:
@@ -66,6 +69,7 @@ def obtener_especialidades():
         ]
 
 
+# Inserta un nuevo médico en la base de datos.
 def agregar_medico_db(
     nombre,
     apellido,
@@ -101,6 +105,7 @@ def agregar_medico_db(
         )
 
 
+# Actualiza los datos de un médico existente.
 def actualizar_medico_db(
     id_medico,
     nombre,

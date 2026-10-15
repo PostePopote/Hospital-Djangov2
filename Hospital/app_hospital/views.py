@@ -28,6 +28,7 @@ from .usuarios_db import obtener_usuario
 
 
 # Login y logout
+# Estas vistas verifican las credenciales y administran la sesión del usuario.
 
 def login_view(request):
     error = None
@@ -49,11 +50,13 @@ def login_view(request):
 
 
 def logout_view(request):
+    # Cierra la sesión eliminando sus datos y vuelve a la pantalla de acceso.
     request.session.flush()
     return redirect('login')
 
 
 # Paginas basicas
+# Vistas sencillas para mostrar la página principal y una respuesta de prueba.
 
 def home(request):
     return render(request, 'app_hospital/home.html')
@@ -64,8 +67,10 @@ def saludo(request):
 
 
 # Pacientes
+# Estas vistas consultan, crean y actualizan pacientes mediante pacientes_db.
 
 def pacientes(request):
+    # Obtiene todos los pacientes para mostrarlos en el listado.
     lista_pacientes = obtener_pacientes()
 
     return render(
@@ -80,6 +85,7 @@ def agregar_paciente(request):
     if request.method == 'POST':
 
         agregar_paciente_db(
+    # En POST, guarda los datos enviados por el formulario.
             nombre=request.POST.get('nombre'),
             apellido=request.POST.get('apellido'),
             dni=request.POST.get('dni'),
@@ -107,6 +113,7 @@ def agregar_paciente(request):
 
 def editar_paciente(request, id_paciente):
 
+    # Busca el paciente para cargarlo en el formulario de edición.
     paciente = obtener_paciente(id_paciente)
 
     if request.method == 'POST':
@@ -140,9 +147,11 @@ def editar_paciente(request, id_paciente):
 
 
 # Medicos
+# Estas vistas muestran, crean y actualizan médicos y sus especialidades.
 
 def medicos(request):
 
+    # Carga los médicos disponibles para la página de listado.
     lista_medicos = obtener_medicos()
 
     return render(
@@ -156,6 +165,7 @@ def agregar_medico(request):
 
     if request.method == 'POST':
 
+    # Guarda el nuevo médico y regresa al listado.
         agregar_medico_db(
             nombre=request.POST.get('nombre'),
             apellido=request.POST.get('apellido'),
@@ -168,6 +178,7 @@ def agregar_medico(request):
         return redirect('medicos')
 
     lista_especialidades = obtener_especialidades()
+    # En GET, carga las especialidades que ofrece el formulario.
 
     return render(
         request,
@@ -178,6 +189,7 @@ def agregar_medico(request):
 
 def editar_medico(request, id_medico):
 
+    # Carga el médico y las especialidades disponibles para editarlo.
     medico = obtener_medico(id_medico)
     especialidades = obtener_especialidades()
 
@@ -206,9 +218,11 @@ def editar_medico(request, id_medico):
 
 
 # Tratamientos
+# Estas vistas muestran y gestionan tratamientos asociados a pacientes y médicos.
 
 def tratamientos(request):
 
+    # Obtiene los tratamientos para presentar el listado.
     lista_tratamientos = obtener_tratamientos()
 
     return render(
@@ -222,6 +236,8 @@ def agregar_tratamiento(request):
 
     if request.method == 'POST':
 
+    # Registra el tratamiento con los datos enviados por el formulario.
+            # En GET, prepara las opciones para asociar un paciente y un médico.
         agregar_tratamiento_db(
             id_paciente=request.POST.get('id_paciente'),
             id_medico=request.POST.get('id_medico'),
@@ -249,6 +265,7 @@ def agregar_tratamiento(request):
 
 def editar_tratamiento(request, id_tratamiento):
 
+    # Carga el tratamiento y las opciones de asociación para su edición.
     tratamiento = obtener_tratamiento(id_tratamiento)
     lista_pacientes = obtener_pacientes()
     lista_medicos = obtener_medicos()

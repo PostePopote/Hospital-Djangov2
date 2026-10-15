@@ -2,6 +2,7 @@ from django.db import connection
 
 
 def obtener_pacientes():
+    # Consulta todos los pacientes y los devuelve como una lista de diccionarios.
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM pacientes")
 
@@ -14,6 +15,7 @@ def obtener_pacientes():
 
 
 def obtener_paciente(id_paciente):
+    # Busca un paciente por ID; devuelve None si no se encuentra.
     with connection.cursor() as cursor:
         cursor.execute(
             "SELECT * FROM pacientes WHERE id_paciente = %s",
@@ -46,6 +48,7 @@ def agregar_paciente_db(
     fecha_alta,
     estado
 ):
+    # Inserta un nuevo paciente usando los datos recibidos.
     with connection.cursor() as cursor:
         cursor.execute(
             """
@@ -107,6 +110,7 @@ def actualizar_paciente_db(
     fecha_alta,
     estado
 ):
+    # Actualiza los datos del paciente indicado por su ID.
     with connection.cursor() as cursor:
         cursor.execute(
             """
