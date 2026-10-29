@@ -1,7 +1,6 @@
 from django.db import connection
 
-
-# Obtiene todos los tratamientos junto con los nombres de pacientes y médicos.
+# Obtiene todos los tratamientos junto con el paciente y médico relacionados
 def obtener_tratamientos():
 
     with connection.cursor() as cursor:
@@ -23,6 +22,7 @@ def obtener_tratamientos():
                 ON t.id_medico = md.id_medico
         """)
 
+        # Obtiene los nombres de las columnas para crear diccionarios
         columnas = [columna[0] for columna in cursor.description]
 
         return [
@@ -31,11 +31,10 @@ def obtener_tratamientos():
         ]
 
 
-    # Busca un tratamiento por su identificador y devuelve sus datos, si existe.
+# Obtiene un tratamiento específico mediante su ID
 def obtener_tratamiento(id_tratamiento):
 
     with connection.cursor() as cursor:
-
         cursor.execute(
             """
             SELECT *
@@ -49,13 +48,14 @@ def obtener_tratamiento(id_tratamiento):
 
         fila = cursor.fetchone()
 
+        # Si no existe el tratamiento, devuelve None
         if fila is None:
             return None
 
         return dict(zip(columnas, fila))
 
 
-    # Inserta un nuevo tratamiento en la base de datos.
+# Agrega un nuevo tratamiento a la base de datos
 def agregar_tratamiento_db(
     id_paciente,
     id_medico,
@@ -94,7 +94,7 @@ def agregar_tratamiento_db(
         )
 
 
-    # Actualiza los datos del tratamiento identificado por id_tratamiento.
+# Actualiza los datos de un tratamiento existente
 def actualizar_tratamiento_db(
     id_tratamiento,
     id_paciente,

@@ -1,7 +1,6 @@
 from django.db import connection
 
-
-# Recupera médicos junto con el nombre de su especialidad.
+# Obtiene todos los médicos junto con el nombre de su especialidad
 def obtener_medicos():
 
     with connection.cursor() as cursor:
@@ -14,11 +13,12 @@ def obtener_medicos():
                 m.matricula,
                 m.telefono,
                 e.nombre AS especialidad
-            FROM medicos m
-            JOIN especialidades e
+                FROM medicos m
+                JOIN especialidades e
                 ON m.id_especialidad = e.id_especialidad
         """)
 
+        # Obtiene los nombres de las columnas para crear diccionarios
         columnas = [columna[0] for columna in cursor.description]
 
         return [
@@ -27,7 +27,7 @@ def obtener_medicos():
         ]
 
 
-# Busca un médico por identificador; devuelve None si no existe.
+# Obtiene un médico específico mediante su ID
 def obtener_medico(id_medico):
 
     with connection.cursor() as cursor:
@@ -45,13 +45,14 @@ def obtener_medico(id_medico):
 
         fila = cursor.fetchone()
 
+        # Si no existe el médico, devuelve None
         if fila is None:
             return None
 
         return dict(zip(columnas, fila))
 
 
-# Obtiene todas las especialidades disponibles.
+# Obtiene todas las especialidades disponibles
 def obtener_especialidades():
 
     with connection.cursor() as cursor:
@@ -61,6 +62,7 @@ def obtener_especialidades():
             FROM especialidades
         """)
 
+        # Obtiene los nombres de las columnas para crear diccionarios
         columnas = [columna[0] for columna in cursor.description]
 
         return [
@@ -69,7 +71,7 @@ def obtener_especialidades():
         ]
 
 
-# Inserta un nuevo médico en la base de datos.
+# Agrega un nuevo médico a la base de datos
 def agregar_medico_db(
     nombre,
     apellido,
@@ -105,7 +107,7 @@ def agregar_medico_db(
         )
 
 
-# Actualiza los datos de un médico existente.
+# Actualiza los datos de un médico existente
 def actualizar_medico_db(
     id_medico,
     nombre,

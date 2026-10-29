@@ -3,16 +3,13 @@
 from django.db import migrations, models
 
 
-# Defines the initial database migration for the hospital app.
 class Migration(migrations.Migration):
 
-    # Marks this as the app's first migration; it has no prerequisites.
     initial = True
 
     dependencies = [
     ]
 
-    # Create the Paciente table with its fields and database types.
     operations = [
         migrations.CreateModel(
             name='Paciente',

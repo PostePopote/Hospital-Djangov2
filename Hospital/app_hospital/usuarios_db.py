@@ -1,30 +1,33 @@
 from django.db import connection
 
-
-def obtener_usuario(username, password):
-    # Busca en la base de datos un usuario con las credenciales proporcionadas.
-
+def buscar_usuario(username, password):
     with connection.cursor() as cursor:
-
-        # Ejecuta la consulta con parámetros para mantener los valores seguros.
         cursor.execute(
-            """
-            SELECT *
-            FROM usuarios
-            WHERE username = %s
-            AND password = %s
-            """,
+            "SELECT id_usuario, username, nombre, nivel FROM usuarios WHERE username = %s AND password = %s",
             [username, password]
         )
-
-        # Recupera los nombres de las columnas y la primera fila coincidente.
-        columnas = [columna[0] for columna in cursor.description]
-
         fila = cursor.fetchone()
+    # si no encontro nada devuelvo None
+    if fila is None:
+        return None
+    # devuelvo un diccionario para usar user['nivel']
+    return {
+        'id_usuario': fila[0],
+        'username': fila[1],
+        'nombre': fila[2],
+        'nivel': fila[3],
+    }
 
-        # Si no hay coincidencias, indica que el usuario no existe.
-        if fila is None:
-            return None
+def existe_usuario(username):
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT COUNT(*) FROM usuarios WHERE username = %s", [username])
+        fila = cursor.fetchone()
+    return fila[0] > 0
 
-        # Combina los nombres de columna y sus valores en un diccionario.
-        return dict(zip(columnas, fila))
+def crear_usuario(nombre, username, password):
+    # todo usuario nuevo se crea como VISOR
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "INSERT INTO usuarios (nombre, username, password, estado, nivel) VALUES (%s, %s, %s, 'Activo', 'VISOR')",
+            [nombre, username, password]
+        )
