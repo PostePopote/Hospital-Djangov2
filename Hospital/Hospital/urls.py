@@ -14,6 +14,7 @@ urlpatterns = [
     path('medicos/editar/<int:id_medico>/', views.editar_medico, name='editar_medico'),
     path('tratamientos/editar/<int:id_tratamiento>/', views.editar_tratamiento, name='editar_tratamiento'),
     path('login/', views.login, name='login'),
+    path('no-autorizado/', views.no_autorizado, name='no_autorizado'),
     path('registro/', views.registro, name='registro'),
     path('logout/', views.logout, name='logout'),
 ]
