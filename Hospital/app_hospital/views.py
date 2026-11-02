@@ -4,6 +4,8 @@ from .models import Paciente
 from .models import Medico
 from .models import Especialidad
 
+def no_autorizado(request):
+    return render(request, 'app_hospital/no_autorizado.html')
 
 def saludo(request):
     return HttpResponse('Hola Mundo')
