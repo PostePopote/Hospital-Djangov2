@@ -10,6 +10,10 @@ def dictfetchall(cursor):
     columnas = [col[0] for col in cursor.description]
     return [dict(zip(columnas, fila)) for fila in cursor.fetchall()]
 
+# SweetAlert2 no autorización
+def no_autorizado(request):
+    return render(request, 'app_hospital/no_autorizado.html')
+
 # Login
 def login(request):
     error = ''
