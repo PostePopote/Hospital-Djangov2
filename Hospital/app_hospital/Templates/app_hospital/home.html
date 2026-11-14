@@ -35,6 +35,12 @@
                 <!-- Si hay sesion muestro el saludo y cerrar sesion, si no, login y registro -->
                 {% if request.session.nivel %}
                     <span class="text-white me-3">Hola, {{ request.session.username }}</span>
+
+                    <!-- NUEVO: solo el admin ve el boton para gestionar las cuentas y sus roles -->
+                    {% if request.session.nivel == 'ADMIN' %}
+                        <a href="/usuarios/" class="btn btn-light me-2">Usuarios</a>
+                    {% endif %}
+
                     <a href="{% url 'logout' %}" class="btn btn-outline-light">Cerrar sesion</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Iniciar sesion</a>
@@ -145,8 +151,8 @@
                         <div class="fs-2 mb-2">👤</div>
                         <h5 class="card-title">Pacientes</h5>
                         <p>Registrar y consultar la informacion de los pacientes de forma organizada.</p>
-                        <!-- Solo el admin ve este boton -->
-                        {% if request.session.nivel == 'ADMIN' %}
+                        <!-- NUEVO: pacientes lo ven admin, medico y recepcion (el visitor no) -->
+                        {% if request.session.nivel == 'ADMIN' or request.session.nivel == 'MEDICO' or request.session.nivel == 'RECEPCION' %}
                             <a href="{% url 'pacientes' %}" class="btn btn-outline-hospital btn-sm">Ver pacientes →</a>
                         {% endif %}
                     </div>
@@ -157,7 +163,7 @@
                         <div class="fs-2 mb-2">🩺</div>
                         <h5 class="card-title">Medicos</h5>
                         <p>Gestionar profesionales, especialidades e informacion relacionada.</p>
-                        <!-- Lo ve cualquiera que tenga sesion iniciada -->
+                        <!-- Medicos lo ve cualquiera que tenga sesion iniciada, sin importar el rol -->
                         {% if request.session.nivel %}
                             <a href="{% url 'medicos' %}" class="btn btn-outline-hospital btn-sm">Ver medicos →</a>
                         {% endif %}
@@ -169,8 +175,8 @@
                         <div class="fs-2 mb-2">💊</div>
                         <h5 class="card-title">Tratamientos</h5>
                         <p>Llevar un seguimiento ordenado de tratamientos y procedimientos.</p>
-                        <!-- Solo el admin ve este boton -->
-                        {% if request.session.nivel == 'ADMIN' %}
+                        <!-- NUEVO: tratamientos lo ven solo admin y medico (recepcion y visitor no) -->
+                        {% if request.session.nivel == 'ADMIN' or request.session.nivel == 'MEDICO' %}
                             <a href="{% url 'tratamientos' %}" class="btn btn-outline-hospital btn-sm">Ver tratamientos →</a>
                         {% endif %}
                     </div>
@@ -261,6 +267,7 @@
         </div>
     </section>
 
+    <!-- LLAMADO A LA ACCION -->
     <section class="py-5 text-center text-white" style="background-color: var(--hospital-primary-dark);">
         <div class="container">
             <span class="text-uppercase fw-bold">¿Listo para comenzar?</span>
@@ -290,16 +297,27 @@
                     <a href="#beneficios" class="d-block text-muted">Beneficios</a>
                 </div>
 
+                <!-- NUEVO: los links del footer siguen las mismas reglas de rol que las tarjetas -->
                 <div class="col-md-4 mb-3">
                     <h6>Sistema</h6>
-                    {% if request.session.nivel == 'ADMIN' %}
+                    {% if request.session.nivel == 'ADMIN' or request.session.nivel == 'MEDICO' or request.session.nivel == 'RECEPCION' %}
                         <a href="{% url 'pacientes' %}" class="d-block text-muted">Pacientes</a>
                     {% endif %}
                     {% if request.session.nivel %}
                         <a href="{% url 'medicos' %}" class="d-block text-muted">Medicos</a>
                     {% endif %}
-                    {% if request.session.nivel == 'ADMIN' %}
+                    {% if request.session.nivel == 'ADMIN' or request.session.nivel == 'MEDICO' %}
                         <a href="{% url 'tratamientos' %}" class="d-block text-muted">Tratamientos</a>
                     {% endif %}
                 </div>
             </div>
+
+            <hr>
+            <p class="text-center text-muted mb-0">© 2026 Sistema de Gestion Hospitalaria. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS, necesario para que funcione el boton del menu en celular -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -143,6 +143,6 @@ VALUES ('Carlos', 'Lopez', '4521', '351-1234567', 1, 'Activo');
 INSERT INTO usuarios (username, password, nombre, estado)
 VALUES ('admin', '1234', 'Administrador', 'Activo');
 
-ALTER TABLE usuarios ADD COLUMN nivel ENUM('ADMIN','VISOR') NOT NULL DEFAULT 'VISOR';
+ALTER TABLE usuarios MODIFY COLUMN nivel ENUM('ADMIN','MEDICO','RECEPCION','VISOR') NOT NULL DEFAULT 'VISOR';
 INSERT INTO usuarios (username, password, nombre, estado, nivel)
 VALUES ('admin', 'admin123', 'Administrador', 'Activo', 'ADMIN');

@@ -1,20 +1,21 @@
-
 from functools import wraps
 from django.shortcuts import redirect
 
-def solo_admin(view):
-    @wraps(view)
-    def wrapper(request, *args, **kwargs):
+def roles_permitidos(*roles):
+    def decorador(view):
+        @wraps(view)
+        def wrapper(request, *args, **kwargs):
+            nivel = request.session.get('nivel')
+            # si no hay sesion iniciada, lo mando al login
+            if nivel is None:
+                return redirect('login')
+            # el admin pasa siempre, los demas solo si su rol esta en la lista
+            if nivel != 'ADMIN' and nivel not in roles:
+                # NUEVO: en vez de la pantalla blanca, lo mando a la pagina del cartel
+                return redirect('no_autorizado')
+            return view(request, *args, **kwargs)
+        return wrapper
+    return decorador
 
-        # Si no hay una sesión iniciada, lo manda al login
-        if 'nivel' not in request.session:
-            return redirect('login')
-
-        # Si no es administrador, muestra la alerta
-        if request.session.get('nivel') != 'ADMIN':
-            return redirect('no_autorizado')
-
-        # Si es administrador, permite acceder
-        return view(request, *args, **kwargs)
-
-    return wrapper
+# sin roles en la lista, solo entra el admin
+solo_admin = roles_permitidos()

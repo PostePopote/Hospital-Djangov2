@@ -17,4 +17,5 @@ urlpatterns = [
     path('no-autorizado/', views.no_autorizado, name='no_autorizado'),
     path('registro/', views.registro, name='registro'),
     path('logout/', views.logout, name='logout'),
+    path('usuarios/', views.gestionar_usuarios, name='usuarios'),
 ]

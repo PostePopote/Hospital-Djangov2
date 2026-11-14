@@ -1,13 +1,11 @@
 from django import forms
 from django.db import connection
 
-
 def traer_opciones(consulta):
     # Ejecuta una consulta y devuelve una lista de (id, texto) para los select
     with connection.cursor() as cursor:
         cursor.execute(consulta)
         return [(fila[0], fila[1]) for fila in cursor.fetchall()]
-
 
 class FormularioBase(forms.Form):
     # Agrega las clases de Bootstrap a todos los campos
@@ -18,7 +16,6 @@ class FormularioBase(forms.Form):
                 campo.widget.attrs['class'] = 'form-select'
             else:
                 campo.widget.attrs['class'] = 'form-control'
-
 
 class PacienteForm(FormularioBase):
     nombre = forms.CharField(label='Nombre', max_length=100)
@@ -44,7 +41,6 @@ class PacienteForm(FormularioBase):
         widget=forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d')
     )
     estado = forms.CharField(label='Estado', max_length=20, required=False)
-
 
 class MedicoForm(FormularioBase):
     nombre = forms.CharField(label='Nombre', max_length=100)

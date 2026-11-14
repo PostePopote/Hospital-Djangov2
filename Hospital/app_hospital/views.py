@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db import connection
 from . import forms, usuarios_db
-from .decorador import solo_admin
+from .decorador import roles_permitidos
 
 # Convierte el resultado del cursor en una lista de diccionarios
 def dictfetchall(cursor):
@@ -64,7 +64,7 @@ def saludo(request):
 # Pacientes
 
 # Trae los pacientes de la base de datos y los muestra
-@solo_admin
+@roles_permitidos('MEDICO', 'RECEPCION')
 def pacientes(request):
     with connection.cursor() as cursor:
         cursor.execute("SELECT * FROM pacientes")
@@ -76,7 +76,7 @@ def pacientes(request):
     )
 
 # Muestra y procesa el formulario para agregar un paciente
-@solo_admin
+@roles_permitidos('RECEPCION')
 def agregar_paciente(request):
     if request.method == 'POST':
         form = forms.PacienteForm(request.POST)
@@ -121,7 +121,7 @@ def agregar_paciente(request):
 
 
 # Muestra y actualiza los datos de un paciente
-@solo_admin
+@roles_permitidos('RECEPCION')
 def editar_paciente(request, id_paciente):
     if request.method == 'POST':
         form = forms.PacienteForm(request.POST)
@@ -172,6 +172,7 @@ def editar_paciente(request, id_paciente):
 # Medicos
 
 # Trae los medicos de la base de datos y los muestra
+@roles_permitidos('MEDICO', 'RECEPCION', 'VISOR')
 def medicos(request):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -190,7 +191,7 @@ def medicos(request):
     )
 
 # Muestra y procesa el formulario para agregar un medico
-@solo_admin
+@roles_permitidos('RECEPCION')
 def agregar_medico(request):
     if request.method == 'POST':
         form = forms.MedicoForm(request.POST)
@@ -222,7 +223,7 @@ def agregar_medico(request):
     )
 
 # Muestra y actualiza los datos de un medico
-@solo_admin
+@roles_permitidos('RECEPCION')
 def editar_medico(request, id_medico):
     if request.method == 'POST':
         form = forms.MedicoForm(request.POST)
@@ -262,7 +263,7 @@ def editar_medico(request, id_medico):
 # Tratamientos
 
 # Trae los tratamientos de la base de datos y los muestra
-@solo_admin
+@roles_permitidos('MEDICO')
 def tratamientos(request):
     with connection.cursor() as cursor:
         cursor.execute(
@@ -285,7 +286,7 @@ def tratamientos(request):
     )
 
 # Muestra y procesa el formulario para agregar un tratamiento
-@solo_admin
+@roles_permitidos('MEDICO')
 def agregar_tratamiento(request):
     if request.method == 'POST':
         form = forms.TratamientoForm(request.POST)
@@ -318,7 +319,7 @@ def agregar_tratamiento(request):
     )
 
 # Muestra y actualiza los datos de un tratamiento
-@solo_admin
+@roles_permitidos('MEDICO')
 def editar_tratamiento(request, id_tratamiento):
     if request.method == 'POST':
         form = forms.TratamientoForm(request.POST)
@@ -354,4 +355,22 @@ def editar_tratamiento(request, id_tratamiento):
         request,
         'app_hospital/editar_tratamiento.html',
         {'form': form}
+    )
+
+# Pagina para que el admin le asigne un rol a cada cuenta
+@roles_permitidos()
+def gestionar_usuarios(request):
+    if request.method == 'POST':
+        id_usuario = request.POST.get('id_usuario')
+        nivel = request.POST.get('nivel')
+        # valido en el servidor que el rol sea uno de los permitidos
+        if nivel in usuarios_db.NIVELES:
+            usuarios_db.cambiar_nivel(id_usuario, nivel, request.session.get('username'))
+        return redirect('usuarios')
+
+    lista_usuarios = usuarios_db.listar_usuarios()
+    return render(
+        request,
+        'app_hospital/usuarios.html',
+        {'usuarios': lista_usuarios, 'niveles': usuarios_db.NIVELES}
     )

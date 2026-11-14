@@ -31,3 +31,22 @@ def crear_usuario(nombre, username, password):
             "INSERT INTO usuarios (nombre, username, password, estado, nivel) VALUES (%s, %s, %s, 'Activo', 'VISOR')",
             [nombre, username, password]
         )
+
+# roles validos del sistema
+NIVELES = ['ADMIN', 'MEDICO', 'RECEPCION', 'VISOR']
+
+def listar_usuarios():
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT id_usuario, username, nombre, estado, nivel FROM usuarios ORDER BY username"
+        )
+        columnas = [col[0] for col in cursor.description]
+        return [dict(zip(columnas, fila)) for fila in cursor.fetchall()]
+
+def cambiar_nivel(id_usuario, nivel, username_actual):
+    # el admin no puede cambiar su propio rol, asi no se queda sin acceso
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "UPDATE usuarios SET nivel = %s WHERE id_usuario = %s AND username <> %s",
+            [nivel, id_usuario, username_actual]
+        )
