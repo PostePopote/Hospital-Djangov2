@@ -1,31 +1,79 @@
+{% load static %}
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="{% static 'app_hospital/styles.css' %}">
     <title>Tratamientos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'app_hospital/styles.css' %}">
 </head>
 <body>
-    <h1>Lista de Tratamientos</h1>
+    <div class="container py-4">
 
-    <table border="1">
-        <tr>
-            <th>Paciente</th>
-            <th>Descripcion</th>
-            <th>Medico</th>
-            <th>Fecha Inicio</th>
-        </tr>
-        {% for tratamiento in tratamientos %}
-        <tr>
-            <td>{{ tratamiento.paciente }}</td>
-            <td>{{ tratamiento.descripcion }}</td>
-            <td>{{ tratamiento.medico }}</td>
-            <td>{{ tratamiento.fecha_inicio }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <div class="page-header d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1>Lista de Tratamientos</h1>
+                <p class="page-subtitle">Seguimiento de tratamientos registrados</p>
+            </div>
+            <a href="/tratamientos/agregar/" class="btn btn-hospital">Agregar Tratamiento</a>
+        </div>
 
-    <a href="/">Volver al inicio</a>
+        <input type="text" id="buscador" class="form-control mb-3" placeholder="Buscar tratamiento..." onkeyup="buscarTratamiento()">
+
+        <div class="hospital-table" style="overflow-x: auto;">
+            <table class="table mb-0" id="tablaTratamientos">
+                <thead>
+                    <tr>
+                        <th>Paciente</th>
+                        <th>Descripcion</th>
+                        <th>Medico</th>
+                        <th>Fecha Inicio</th>
+                        <th>Fecha Fin</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tratamiento in tratamientos %}
+                    <tr>
+                        <td>{{ tratamiento.paciente }}</td>
+                        <td>{{ tratamiento.descripcion }}</td>
+                        <td>{{ tratamiento.medico }}</td>
+                        <td>{{ tratamiento.fecha_inicio }}</td>
+                        <td>{{ tratamiento.fecha_fin }}</td>
+                        <td>{{ tratamiento.observaciones }}</td>
+                        <td>
+                            <a href="/tratamientos/editar/{{ tratamiento.id_tratamiento }}/" class="btn btn-sm btn-outline-hospital">
+                                Editar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/" class="btn btn-outline-hospital mt-3">Volver al inicio</a>
+    </div>
+
+    <script>
+        // Filtra las filas de la tabla segun lo que se escribe en el buscador
+        function buscarTratamiento() {
+            var texto = document.getElementById("buscador").value.toLowerCase();
+            var tabla = document.getElementById("tablaTratamientos");
+            var filas = tabla.getElementsByTagName("tr");
+
+            for (var i = 1; i < filas.length; i++) {
+                var fila = filas[i];
+                var textoFila = fila.textContent.toLowerCase();
+
+                if (textoFila.indexOf(texto) > -1) {
+                    fila.style.display = "";
+                } else {
+                    fila.style.display = "none";
+                }
+            }
+        }
+    </script>
 </body>
 </html>
